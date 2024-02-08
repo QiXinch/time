@@ -20,14 +20,16 @@ int main(int argc, char **argv)
     set_affinity(11);
 
     *sync = num;
-    uint64_t dummy1 = 0;
+    uint64_t dummy0 = 0;
+    uint64_t dummy1;
+    uint64_t dummy2;
 
     pid_t child = fork();
     if(child == 0)
     {
         set_affinity(12);
 
-        uint64_t dummy = *sync;
+        dummy1 = *sync;
 
         Freq freq;
 
@@ -37,6 +39,7 @@ int main(int argc, char **argv)
         uint64_t sync1 = rdtscp();
         __asm__ __volatile__("child_e: \n\t":::);
 
+        std::cout << "dummy1 = " << dummy1 << std::endl;
         std::cout << "sync cycles = " << (sync1 - *sync) << std::endl;
 
         freq.end();
@@ -44,11 +47,11 @@ int main(int argc, char **argv)
     }
     else
     {
-        uint64_t dummy = *sync;
+        uint64_t dummy2 = *sync;
 
         __asm__ __volatile__("parent_s0: \n\t":::);
         for(uint64_t i = 0; i < num; ++i)
-            dummy1 += i;
+            dummy0 += i;
         __asm__ __volatile__("parent_e0: \n\t":::);
 
         __asm__ __volatile__("parent_s: \n\t":::);
@@ -60,7 +63,8 @@ int main(int argc, char **argv)
 
         munmap(sync, sizeof(*sync));
 
-        std::cout << "dummy = " << dummy1 << std::endl;
+        std::cout << "dummy0 = " << dummy0 << std::endl;
+        std::cout << "dummy2 = " << dummy2 << std::endl;
         std::cout << "over" << std::endl;
     }
 
