@@ -3,8 +3,12 @@
 
 #include <iostream>
 #include <sys/time.h>
+#include <sys/types.h>
+#include <sys/syscall.h>
 #include <sched.h>
 #include <unistd.h>
+
+#define gettid() syscall(__NR_gettid)
 
 static void set_affinity(int cpu)
 {
