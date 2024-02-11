@@ -12,7 +12,7 @@ static void set_affinity(int cpu)
     CPU_ZERO(&cpus);
     CPU_SET(cpu, &cpus);
 
-    if(sched_setaffinity(getpid(), sizeof(cpus), &cpus) == -1)
+    if(sched_setaffinity(gettid(), sizeof(cpus), &cpus) == -1)
     {
         std::cout << "set affinity on cpu " << cpu << " fail!" << std::endl; 
         exit(1);
