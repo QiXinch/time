@@ -1,3 +1,7 @@
+// when i use amd server, i find that its l3 cache shared on 3 cores, 
+// so when binding the thread on 6,7,8 and when binding the thread on 6, 8, 9
+// the result is differnent
+
 #include <iostream>
 #include <thread>
 #include <sys/time.h>
@@ -6,7 +10,7 @@
 
 int main(int argc, char **argv)
 {
-    set_affinity(8);
+    set_affinity(6);
 
     if(argc != 2)
     {
@@ -27,7 +31,7 @@ int main(int argc, char **argv)
     uint64_t dummy = 0ul;
 
     auto fun0 = [&]() -> void {
-        set_affinity(9);
+        set_affinity(8);
 
         Freq freq;
         uint64_t dummy1;
@@ -54,7 +58,7 @@ int main(int argc, char **argv)
     };
 
     auto fun1 = [&]() -> void {
-        set_affinity(10);
+        set_affinity(9);
 
         uint64_t dummy1;
         __asm__ __volatile__("movq (%1), %0" : "=r"(dummy1) : "r"(sync) :);
