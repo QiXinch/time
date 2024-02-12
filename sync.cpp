@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 
     uint64_t num = static_cast<uint64_t>(std::atoll(argv[1]));
 
-    uint64_t *sync = reinterpret_cast<uint64_t*>(mmap(nullptr, sizeof(uint64_t), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, -1, 0));
+    uint64_t *sync = reinterpret_cast<uint64_t*>(mmap(nullptr, sizeof(uint64_t) * 2, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, -1, 0));
     if(sync == nullptr)
     {
         std::cout << "malloc memory fail!" << std::endl;
@@ -61,6 +61,7 @@ int main(int argc, char **argv)
 
         for(uint64_t i = 0; i < num; ++i)
             dummy += i;
+        //__asm__ __volatile__("movq %0, 8(%1)" : : "i"(0ul), "r"(sync) : );
 
         *sync = rdtscp();
     };
@@ -71,7 +72,7 @@ int main(int argc, char **argv)
     thread0.join();
     thread1.join();
 
-    munmap(sync, sizeof(*sync));
+    munmap(sync, sizeof(*sync) * 2);
     std::cout << "dummy = " << dummy << std::endl;
  
     return 0;
