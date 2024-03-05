@@ -36,7 +36,7 @@ inline uint64_t rdtscp()
 
 class Freq
 {
-    private:
+    public:
         timeval stime;
         timeval etime;
         uint64_t scycles;
